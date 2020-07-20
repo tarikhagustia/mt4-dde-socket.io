@@ -3,8 +3,10 @@ import time
 import redis
 import json
 import os
+import sys
 from dotenv import load_dotenv
 load_dotenv()
+sys.setrecursionlimit(10000000)
 
 # Connect to MT4
 # Must register BID and ASK as topics separately..
