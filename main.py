@@ -28,29 +28,34 @@ for s in symbols:
 # Prove it worked:
 columns = ['Symbol', 'DATE', 'TIME', 'BID', 'ASK']
 
+print symbols
 
 while 1:
     time.sleep(1)
     to_display = []
     for item in symbols:
-        current_quote = QUOTE_client.request(item).split()
-        symbol_dict = dictSymbol.get(item)
-        
-        if(symbol_dict["bid"] != current_quote[2] or symbol_dict["ask"] != current_quote[3]):
-            # Push Data
+        try:
+            current_quote = QUOTE_client.request(item).split()
+            symbol_dict = dictSymbol.get(item)
+            print current_quote
             
-            # Save data
-            dictSymbol[item]["bid"] = current_quote[2]
-            dictSymbol[item]["ask"] = current_quote[3]
-            # current_quote.insert(0, item)
-            # to_display.append(current_quote)
-            test_list = current_quote
-            test_list.insert(0, item)
-            print test_list
-            pub = {
-                "symbol": item,
-                "bid": dictSymbol[item]["bid"],
-                "ask": dictSymbol[item]["ask"]
-            }
+            if(symbol_dict["bid"] != current_quote[2] or symbol_dict["ask"] != current_quote[3]):
+                # Push Data
+                
+                # Save data
+                dictSymbol[item]["bid"] = current_quote[2]
+                dictSymbol[item]["ask"] = current_quote[3]
+                # current_quote.insert(0, item)
+                # to_display.append(current_quote)
+                test_list = current_quote
+                test_list.insert(0, item)
+                print test_list
+                pub = {
+                    "symbol": item,
+                    "bid": dictSymbol[item]["bid"],
+                    "ask": dictSymbol[item]["ask"]
+                }
 
-            r.publish('quote', json.dumps(pub))
+                r.publish('quote', json.dumps(pub))
+        except Exception, e:
+            print "somethin went wrong: " + str(e)
